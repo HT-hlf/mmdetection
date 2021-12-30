@@ -2,12 +2,14 @@ _base_ = '../_base_/default_runtime.py'
 # model settings
 model = dict(
     type='YOLOV3',
+    
     backbone=dict(
         type='MobileNetV2',
         out_indices=(2, 4, 6),
         act_cfg=dict(type='LeakyReLU', negative_slope=0.1),
         init_cfg=dict(
             type='Pretrained', checkpoint='open-mmlab://mmdet/mobilenet_v2')),
+    
     neck=dict(
         type='YOLOV3Neck',
         num_scales=3,
@@ -20,9 +22,11 @@ model = dict(
         out_channels=[96, 96, 96],
         anchor_generator=dict(
             type='YOLOAnchorGenerator',
+            #和yolov3_608 anhcor一样
             base_sizes=[[(116, 90), (156, 198), (373, 326)],
                         [(30, 61), (62, 45), (59, 119)],
                         [(10, 13), (16, 30), (33, 23)]],
+#reading this
             strides=[32, 16, 8]),
         bbox_coder=dict(type='YOLOBBoxCoder'),
         featmap_strides=[32, 16, 8],
