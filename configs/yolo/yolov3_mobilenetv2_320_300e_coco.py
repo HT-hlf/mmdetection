@@ -4,6 +4,7 @@ _base_ = ['./yolov3_mobilenetv2_mstrain-416_300e_coco.py']
 model = dict(
     bbox_head=dict(
         anchor_generator=dict(
+            #batch_size：320 的anchor调整了大小，但是好像不是线性关系？
             base_sizes=[[(220, 125), (128, 222), (264, 266)],
                         [(35, 87), (102, 96), (60, 170)],
                         [(10, 15), (24, 36), (72, 42)]])))
@@ -11,6 +12,7 @@ model = dict(
 
 # dataset settings
 img_norm_cfg = dict(
+    #这个也改成coco的了
     mean=[123.675, 116.28, 103.53], std=[58.395, 57.12, 57.375], to_rgb=True)
 train_pipeline = [
     dict(type='LoadImageFromFile'),
