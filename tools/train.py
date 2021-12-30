@@ -29,6 +29,8 @@ def parse_args():
         '--no-validate',
         action='store_true',
         help='whether not to evaluate the checkpoint during training')
+    
+    #add_mutually_exclusive_group()
     group_gpus = parser.add_mutually_exclusive_group()
     group_gpus.add_argument(
         '--gpus',
@@ -41,6 +43,11 @@ def parse_args():
         nargs='+',
         help='ids of gpus to use '
         '(only applicable to non-distributed training)')
+    #
+    
+    #deterministic 确定性
+    #whether to set deterministic options for CUDNN backend 
+    #是否为 CUDNN 后端设置确定性选项
     parser.add_argument('--seed', type=int, default=None, help='random seed')
     parser.add_argument(
         '--deterministic',
@@ -69,10 +76,14 @@ def parse_args():
         default='none',
         help='job launcher')
     parser.add_argument('--local_rank', type=int, default=0)
+    #
+    
+    
     args = parser.parse_args()
+    
+    #
     if 'LOCAL_RANK' not in os.environ:
         os.environ['LOCAL_RANK'] = str(args.local_rank)
-
     if args.options and args.cfg_options:
         raise ValueError(
             '--options and --cfg-options cannot be both '
@@ -80,6 +91,7 @@ def parse_args():
     if args.options:
         warnings.warn('--options is deprecated in favor of --cfg-options')
         args.cfg_options = args.options
+    #
 
     return args
 
@@ -159,10 +171,14 @@ def main():
     model.init_weights()
 
     datasets = [build_dataset(cfg.data.train)]
+    
+    #
     if len(cfg.workflow) == 2:
         val_dataset = copy.deepcopy(cfg.data.val)
         val_dataset.pipeline = cfg.data.train.pipeline
         datasets.append(build_dataset(val_dataset))
+    #
+    
     if cfg.checkpoint_config is not None:
         # save mmdet version, config file content and class names in
         # checkpoints as meta data
