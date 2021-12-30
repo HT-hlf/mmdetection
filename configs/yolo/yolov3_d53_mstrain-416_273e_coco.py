@@ -1,5 +1,6 @@
 _base_ = './yolov3_d53_mstrain-608_273e_coco.py'
 # dataset settings
+#改个resize需要把train_pipeline所有配置申明一遍吗？
 img_norm_cfg = dict(mean=[0, 0, 0], std=[255., 255., 255.], to_rgb=True)
 train_pipeline = [
     dict(type='LoadImageFromFile'),
