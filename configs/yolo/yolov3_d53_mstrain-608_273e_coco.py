@@ -7,6 +7,7 @@ model = dict(
         depth=53,
         out_indices=(3, 4, 5),
         init_cfg=dict(type='Pretrained', checkpoint='open-mmlab://darknet53')),
+    
     neck=dict(
         type='YOLOV3Neck',
         num_scales=3,
@@ -14,15 +15,23 @@ model = dict(
         out_channels=[512, 256, 128]),
     bbox_head=dict(
         type='YOLOV3Head',
+        
+        #这个需要改成自己的
         num_classes=80,
+        
+        
         in_channels=[512, 256, 128],
         out_channels=[1024, 512, 256],
+        
         anchor_generator=dict(
             type='YOLOAnchorGenerator',
+            
+            #base_sizes应该是指在原图中的anchor尺寸？但是416配置文件并没有base_sizes更改，并且训练自己数据集是否应该聚类并手动修改？
             base_sizes=[[(116, 90), (156, 198), (373, 326)],
                         [(30, 61), (62, 45), (59, 119)],
                         [(10, 13), (16, 30), (33, 23)]],
             strides=[32, 16, 8]),
+        
         bbox_coder=dict(type='YOLOBBoxCoder'),
         featmap_strides=[32, 16, 8],
         loss_cls=dict(
@@ -35,6 +44,7 @@ model = dict(
             use_sigmoid=True,
             loss_weight=1.0,
             reduction='sum'),
+        #预测框中心x,y被限定在0~1,使用CrossEntropyLoss
         loss_xy=dict(
             type='CrossEntropyLoss',
             use_sigmoid=True,
@@ -42,6 +52,7 @@ model = dict(
             reduction='sum'),
         loss_wh=dict(type='MSELoss', loss_weight=2.0, reduction='sum')),
     # training and testing settings
+    #
     train_cfg=dict(
         assigner=dict(
             type='GridAssigner',
@@ -55,18 +66,22 @@ model = dict(
         conf_thr=0.005,
         nms=dict(type='nms', iou_threshold=0.45),
         max_per_img=100))
+    #
 # dataset settings
 dataset_type = 'CocoDataset'
 data_root = 'data/coco/'
+#区别于fasterrcnn img_norm_cfg = dict(mean=[123.675, 116.28, 103.53], std=[58.395, 57.12, 57.375], to_rgb=True) 这个应该是coco数据集提供的，但是yolov3为什么没有更改
 img_norm_cfg = dict(mean=[0, 0, 0], std=[255., 255., 255.], to_rgb=True)
 train_pipeline = [
     dict(type='LoadImageFromFile', to_float32=True),
     dict(type='LoadAnnotations', with_bbox=True),
+    #
     dict(
         type='Expand',
         mean=img_norm_cfg['mean'],
         to_rgb=img_norm_cfg['to_rgb'],
         ratio_range=(1, 2)),
+    #
     dict(
         type='MinIoURandomCrop',
         min_ious=(0.4, 0.5, 0.6, 0.7, 0.8, 0.9),
@@ -94,6 +109,7 @@ test_pipeline = [
             dict(type='Collect', keys=['img'])
         ])
 ]
+###添加自己的classes=()
 data = dict(
     samples_per_gpu=8,
     workers_per_gpu=4,
@@ -114,7 +130,9 @@ data = dict(
         pipeline=test_pipeline))
 # optimizer
 optimizer = dict(type='SGD', lr=0.001, momentum=0.9, weight_decay=0.0005)
+#
 optimizer_config = dict(grad_clip=dict(max_norm=35, norm_type=2))
+#
 # learning policy
 lr_config = dict(
     policy='step',
