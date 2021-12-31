@@ -22,11 +22,10 @@ model = dict(
         out_channels=[96, 96, 96],
         anchor_generator=dict(
             type='YOLOAnchorGenerator',
-            #和yolov3_608 anhcor一样
+            #和yolov3_608 anhcor一样,怎么回事?这个是由论文定的吗？
             base_sizes=[[(116, 90), (156, 198), (373, 326)],
                         [(30, 61), (62, 45), (59, 119)],
                         [(10, 13), (16, 30), (33, 23)]],
-#reading this
             strides=[32, 16, 8]),
         bbox_coder=dict(type='YOLOBBoxCoder'),
         featmap_strides=[32, 16, 8],
@@ -64,6 +63,7 @@ model = dict(
 dataset_type = 'CocoDataset'
 data_root = 'data/coco/'
 img_norm_cfg = dict(
+    #和yolov3不一样
     mean=[123.675, 116.28, 103.53], std=[58.395, 57.12, 57.375], to_rgb=True)
 train_pipeline = [
     dict(type='LoadImageFromFile'),
@@ -108,6 +108,7 @@ data = dict(
     samples_per_gpu=24,
     workers_per_gpu=4,
     train=dict(
+        #和多训练几个epoch有什么区别，如何加速
         type='RepeatDataset',  # use RepeatDataset to speed up training
         times=10,
         dataset=dict(
@@ -138,4 +139,5 @@ lr_config = dict(
 # runtime settings
 runner = dict(type='EpochBasedRunner', max_epochs=30)
 evaluation = dict(interval=1, metric=['bbox'])
+#有什么用
 find_unused_parameters = True
