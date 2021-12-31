@@ -30,7 +30,7 @@ def parse_args():
         action='store_true',
         help='whether not to evaluate the checkpoint during training')
     
-    #add_mutually_exclusive_group()
+    #
     group_gpus = parser.add_mutually_exclusive_group()
     group_gpus.add_argument(
         '--gpus',
@@ -46,8 +46,7 @@ def parse_args():
     #
     
     #deterministic 确定性
-    #whether to set deterministic options for CUDNN backend 
-    #是否为 CUDNN 后端设置确定性选项
+    #whether to set deterministic options for CUDNN backend ：是否为 CUDNN 后端设置确定性选项
     parser.add_argument('--seed', type=int, default=None, help='random seed')
     parser.add_argument(
         '--deterministic',
