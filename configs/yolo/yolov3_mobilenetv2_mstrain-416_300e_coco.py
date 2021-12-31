@@ -108,7 +108,7 @@ data = dict(
     samples_per_gpu=24,
     workers_per_gpu=4,
     train=dict(
-        #和多训练几个epoch有什么区别，如何加速
+        #和多训练几个epoch有什么区别，如何加速：应该没什么区别，就是在加载数据那里更快
         type='RepeatDataset',  # use RepeatDataset to speed up training
         times=10,
         dataset=dict(
