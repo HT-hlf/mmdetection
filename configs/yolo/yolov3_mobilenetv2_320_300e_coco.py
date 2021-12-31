@@ -4,7 +4,7 @@ _base_ = ['./yolov3_mobilenetv2_mstrain-416_300e_coco.py']
 model = dict(
     bbox_head=dict(
         anchor_generator=dict(
-            #batch_size：320 的anchor调整了大小，但是好像不是线性关系？
+            #batch_size：320 的anchor调整了大小，但是好像不是线性关系？和416 的有什么关系呢？
             base_sizes=[[(220, 125), (128, 222), (264, 266)],
                         [(35, 87), (102, 96), (60, 170)],
                         [(10, 15), (24, 36), (72, 42)]])))
